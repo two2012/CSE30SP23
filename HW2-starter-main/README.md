@@ -5,4 +5,4 @@
   * ____________________________________________
   * ____________________________________________
 * Estimated Hours spent on assignment:
-* Acknowledge that you adhered to our Academic Integrity Pledge by typing your Name:
+* Acknowledge that you adhered to our Academic Integrity Pledge by typing your Name: Wen Guo
