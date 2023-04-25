@@ -40,5 +40,6 @@ main(int argc, char **argv){
   //TODO: Get stopping time
   int stopping_time = compute(x);
   printf(STOP_TIME, x, stopping_time);
+  return EXIT_SUCCESS;
 }
 
