@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 const char* USAGE_ERROR = "Usage %s starting_number\n";
 const char* OUT_OF_BOUNDS_ERRORS ="argument %lld must be > 0 and less than or equal to 2,147,483,647\n";
@@ -31,7 +32,7 @@ main(int argc, char **argv){
     return EXIT_FAILURE;
   }
   long long x = atoll(argv[1]);
-  if (x <= 0 || x > 2147483647){
+  if (x <= 0 || x > 2147483647ll){
     fprintf(stderr, OUT_OF_BOUNDS_ERRORS, x);
     return EXIT_FAILURE;
   }

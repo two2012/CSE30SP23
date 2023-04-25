@@ -1,7 +1,7 @@
 # Fill out fields below before turning in your assignment
 
 * Collaborators and Assistance (TA or Tutor is fine if you don't remember their name):
-  * ____________________________________________
+  * _________TA_________________________________
   * ____________________________________________
   * ____________________________________________
 * Estimated Hours spent on assignment: 3 hours
