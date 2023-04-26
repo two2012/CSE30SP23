@@ -4,6 +4,7 @@
 
 #define MAX_LEN 256 // maximum length of a single word
 extern char rotate(char, int);
+extern char rotateNagative(char, int);
 
 int main(int argc, char* argv[]) {
 
@@ -27,7 +28,12 @@ int main(int argc, char* argv[]) {
   int input;
 
   while ((input = fgetc(fin)) != EOF){
-    printf("%c", rotate(input, n));
+    if (n >= 0){
+      printf("%c", rotate(input, n));
+    } else {
+      printf("%c", rotateNagative(input, n));
+    }
+    
   }
 
   // clean up gracefully
@@ -48,4 +54,9 @@ char rotate(char input, int n) {
     // do not rotate non-letters
     return input;
   }
+}
+
+char rotateNagative(char input, int n) {
+    n = 26 + n;
+    return rotate(input, n);
 }
