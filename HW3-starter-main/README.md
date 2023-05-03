@@ -4,5 +4,5 @@
   * ________________TA__________________________
   * ____________________________________________
   * ____________________________________________
-* Estimated Hours spent on assignment:
+* Estimated Hours spent on assignment: 5 hours
 * Acknowledge that you adhered to our Academic Integrity Pledge by typing your Name: Wen Guo
