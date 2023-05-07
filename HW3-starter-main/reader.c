@@ -54,7 +54,7 @@ int main(int argc, char **argv)
         obuf = (int *)malloc(out_cols * sizeof(int));
         for (int i = 0; i < out_cols; i++)
         {
-            obuf[i] = atoi(argv[optind]);
+            *(obuf+i) = atoi(*(argv+optind));
             optind++;
         }
     }
@@ -72,14 +72,14 @@ int main(int argc, char **argv)
         int col = 0;
         while (tok != NULL)
         {
-            buf[col] = tok;
+            *(buf+col) = tok;
             col++;
             tok = strtok(NULL, " \t\n");
         }
 
         for (int i = 0; i < out_cols; i++)
         {
-            int idx = obuf[i];
+            int idx = *(obuf+i);
             if (idx < col)
             {
                 printf("%s", buf[idx]);
@@ -87,9 +87,9 @@ int main(int argc, char **argv)
                 {
                     printf(" ");
                 }
-                if (strlen(buf[idx]) > lngst_fld)
+                if (strlen(*(buf+idx)) > lngst_fld)
                 {
-                    lngst_fld = strlen(buf[idx]);
+                    lngst_fld = strlen(*(buf+idx));
                 }
             }
         }
