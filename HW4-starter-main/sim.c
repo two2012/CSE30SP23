@@ -1,6 +1,6 @@
 /**
  * Assignment: life
- * Name: TODO
+ * Name: Wen Guo
  * PID: A17630856
  * Class: UCSD CSE30-SP21
  *
