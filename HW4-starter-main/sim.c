@@ -27,20 +27,23 @@ static void doRow(belem *dest, belem *src, size_t row, size_t rows, size_t cols)
 {
   // TODO:
   // calculate the alive neighbors for each cell in the row
-  for (size_t i = 0; i < cols; i++)
+  for (int i = 0; i < cols; i++)
   {
     int alive_neighbors = 0;
 
     // check surrounding cells for each cell in the row
-    for (size_t j = -1; j < 2; j++)
+    for (int j = -1; j < 2; j++)
     {
-      for (size_t k = -1; k < 2; k++)
+      for (int k = -1; k < 2; k++)
       {
         if (j == 0 && k == 0)
         {
           continue;
         }
-        if (src[(getModVal(row + j, rows) * cols) + k] == 1)
+        size_t neighbor_row = getModVal(row + j, rows);
+        size_t neighbor_col = getModVal(i + k, cols);
+
+        if (src[neighbor_row * cols + neighbor_col] == 1)
         {
           alive_neighbors++;
         }
@@ -83,15 +86,16 @@ static void doRow(belem *dest, belem *src, size_t row, size_t rows, size_t cols)
 void simLoop(boards_t *self, unsigned int steps)
 {
   // TODO:
-
-  for (size_t i = 0; i < steps; i++)
+  for (int i = 0; i < steps; i++)
   {
     // calculate the next board
-    for (size_t j = 0; j < self->numRows; j++)
+    for (int j = 0; j < self->numRows; j++)
     {
       doRow(self->nextBuffer, self->currentBuffer, j, self->numRows, self->numCols);
     }
   }
   // swap current and next
   swapBuffers(self);
+
+  self->gen += steps;
 }
