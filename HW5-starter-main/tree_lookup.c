@@ -14,20 +14,36 @@ int main(int argc, char **argv) {
 	unsigned long tabsz;
 	// TODO: parse opts with getopt and initialize these variables 
 	// (see strtoul for parsing unsigned long)
+	while ((int opt = getopt(argc, argv, "st:")) != -1)
+	{
+		switch (opt)
+		{
+			case 's':
+				s_flag = 1;
+				break;
+			case 't':
+				tabsz = strtoul(optarg, NULL, 10);
+				if (tabsz < MIN_TAB_SZ)
+				{
+					tabsz = DEFAULT_TAB_SZ;
+				}
+				break;
+		}
+	}
 
 	
 	// TODO: initialze htable
 	// using calloc so all buckets are initialized to NULL
-	node **htable = calloc(/* TODO: fill in */);
+	node **htable = calloc(tabsz, sizeof(node*));
 	if (htable == NULL) {
 		return EXIT_FAILURE;
 	}
 	
 	// TODO: get filename and call load_table;
 	
-	char *filename = /* TODO: fill in */
+	char *filename = argv[1];
 
-	if (/* TODO: call load_table and check if it succeeded */) {
+	if (load_table(filename, htable, tabsz) != 0) {
 		fprintf(stderr, "error in load_table\n");
 		free(htable);
 		return EXIT_FAILURE;
@@ -39,6 +55,7 @@ int main(int argc, char **argv) {
 	// read one line at a time from stdin, do a lookup for that id
 	// 
 	ssize_t bytes;
+	int successful_queries = 0;
 	while ((bytes = getline(&buf, &bufsz, stdin)) > 0) {
 		// replace the \n, if it exists (for hashing)
 		if (buf[bytes - 1] == '\n') buf[bytes - 1] = '\0';
@@ -47,21 +64,34 @@ int main(int argc, char **argv) {
 		// if the tree is found, print its x and y to stdout
 		// using QUERY_SUCCESS_FORMAT
 		//
-		// if the tree is not found, print a message to **stdout**
-		// using QUERY_FAILURE_FORMAT
-		//
+		unsigned long hashed_id = hash(buf);
+		node *found = lookup(htable[hashed_id % tabsz], buf);
+		if (found != NULL)
+		{
+			printf(QUERY_SUCCESS_FORMAT, found->id, found->x, found->y);
+			successful_queries++;
+		}
+		else
+		{
+			// if the tree is not found, print a message to **stdout**
+			// using QUERY_FAILURE_FORMAT
+			printf(QUERY_FAILURE_FORMAT, buf);
+		}
+		
 		// keep track of the number of successful queries
 	}
-	printf("%d successful queries\n", /* TODO: fill in */);
+	printf("%d successful queries\n", successful_queries);
 
 	// if -s called then print stats
-	if (/* TODO: fill in */) {
-		// TODO: output the stats 
+	if (s_flag) {
+		// TODO: output the stats
+		print_info(htable, tabsz);
+
 	}
 
 	// TODO: free all allocated memory associated with the table 
 	// using delete_table()
-	//
+	delete_table(htable, tabsz);
 	free(buf);  // free the buffer allocated by getline()
 
 	return EXIT_SUCCESS;
