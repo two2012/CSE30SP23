@@ -5,9 +5,13 @@ node *node_lookup(node *front, char *id) {
 	// TODO: step through the chain pointed to by front
 	// use function like strcmp to compare the id to the current node
 	// if found return a pointer to the node, else return NULL
-	
-	(void) front; // suppress unused variable warnings 
-	(void) id; // TODO: delete these when you start implementation 
+	for (node *curr = front; curr != NULL; curr = curr->next)
+	{
+		if (strcmp(curr->id, id) == 0)
+		{
+			return curr;
+		}
+	}
 
-	return NULL; // TODO: fix this when you start implementation
+	return NULL; 
 }

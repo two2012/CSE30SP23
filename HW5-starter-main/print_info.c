@@ -21,6 +21,41 @@ void print_info(node **htable, unsigned long tabsz) {
 	// NOTE: you may use ULONG_MAX if you want
 	// (maximum value for unsigned long int)
 	
-	(void) htable; // suppress unused variable warnings
-	(void) tabsz; // TODO: delete these once you start implementation
+	unsigned long total_entries = 0;
+    unsigned long longest_chain = 0;
+    unsigned long shortest_chain = tabsz;
+    unsigned long empty_buckets = 0;
+	
+
+	for (unsigned long i = 0; i < tabsz; i++)
+	{
+		unsigned long chain_length = 0;
+		if (htable[i] == NULL)
+		{
+			empty_buckets++;
+			shortest_chain = 0;
+		}
+		for (node *curr = htable[i]; curr != NULL; curr = curr->next)
+		{
+			chain_length++;
+			total_entries++;
+		}
+		if (chain_length > longest_chain)
+		{
+			longest_chain = chain_length;
+		}
+		if (chain_length < shortest_chain)
+		{
+			shortest_chain = chain_length;
+		}
+	}
+
+	printf(TABSZ_MSG, tabsz);
+	printf(TOTAL_ENTRIES_MSG, total_entries);
+	printf(LONGEST_MSG, longest_chain);
+	printf(SHORTEST_MSG, shortest_chain);
+	printf(EMPTY_MSG, empty_buckets);
+
+
+
 }
