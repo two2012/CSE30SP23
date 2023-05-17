@@ -16,7 +16,7 @@ int load_table(node **htable, unsigned long int tabsz, char *filename) {
 
 	FILE *fp = NULL;
 	// TODO: open the file and check that it was successful
-	if ((fp = open(filename, "r")) == NULL) {
+	if ((fp = fopen(filename, "r")) == NULL) {
 		fprintf(stderr, FILE_OPEN_ERR_MSG, filename);
 		return -1;
 	}
@@ -33,7 +33,7 @@ int load_table(node **htable, unsigned long int tabsz, char *filename) {
 		double xcoord = atof(xstr);
 		double ycoord = atof(ystr);
 		// TODO: get the corresponding chain for this entry
-		unsigned long hashed_id = hash(id, tabsz);
+		unsigned long hashed_id = hash(id);
 		node *chain = htable[hashed_id];
 		
 		// TODO: check that the node doesn't already exist in table

@@ -8,7 +8,7 @@ void delete_table(node **htable, unsigned long tabsz) {
 	//
 	// TODO: free the entire table
 
-	for (unsigned long i = 0; 0 < tabsz; i++)
+	for (unsigned long i = 0; i < tabsz; i++)
 	{
 		node *curr = htable[i];
 		while (curr != NULL)

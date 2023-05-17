@@ -14,7 +14,8 @@ int main(int argc, char **argv) {
 	unsigned long tabsz;
 	// TODO: parse opts with getopt and initialize these variables 
 	// (see strtoul for parsing unsigned long)
-	while ((int opt = getopt(argc, argv, "st:")) != -1)
+	int opt;
+	while ((opt = getopt(argc, argv, "st:")) != -1)
 	{
 		switch (opt)
 		{
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
 	
 	char *filename = argv[1];
 
-	if (load_table(filename, htable, tabsz) != 0) {
+	if (load_table(htable, tabsz, filename) != 0) {
 		fprintf(stderr, "error in load_table\n");
 		free(htable);
 		return EXIT_FAILURE;
@@ -65,10 +66,10 @@ int main(int argc, char **argv) {
 		// using QUERY_SUCCESS_FORMAT
 		//
 		unsigned long hashed_id = hash(buf);
-		node *found = lookup(htable[hashed_id % tabsz], buf);
+		node *found = node_lookup(htable[hashed_id % tabsz], buf);
 		if (found != NULL)
 		{
-			printf(QUERY_SUCCESS_FORMAT, found->id, found->x, found->y);
+			printf(QUERY_SUCCESS_FORMAT, found->id, found->xcoord, found->ycoord);
 			successful_queries++;
 		}
 		else
