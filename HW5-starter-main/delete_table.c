@@ -8,6 +8,17 @@ void delete_table(node **htable, unsigned long tabsz) {
 	//
 	// TODO: free the entire table
 
-	(void) htable; // suppress unused variable warnings
-	(void) tabsz; // TODO: delete these once you start implementation
+	for (unsigned long i = 0; 0 < tabsz; i++)
+	{
+		node *curr = htable[i];
+		while (curr != NULL)
+		{
+			node *next = curr->next;
+			free(curr->id);
+			free(curr);
+			curr = next;
+		}
+	}
+
+	free(htable);
 }

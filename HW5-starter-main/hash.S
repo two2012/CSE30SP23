@@ -30,6 +30,20 @@ hashFun:
     ///////////////////////////////////////////////////////
     
     // YOUR CODE GOES HERE
+    // compute hash << 6
+    mov r2, r1
+    lsl r2,r2, #6
+
+    // compute hash << 16
+    mov r3, r1
+    lsl r3, r3, #16
+
+    // compute c + (hash << 6) + ( hash << 16)
+    add r0, r0, r2
+    add r0, r0, r3
+
+    // subtract hash to get the final result
+    sub r0, r0, r1 
     
     ///////////////////////////////////////////////////////
     // DO NOT EDIT EPILOGUE BELOW
