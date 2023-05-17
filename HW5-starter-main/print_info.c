@@ -56,6 +56,4 @@ void print_info(node **htable, unsigned long tabsz) {
 	printf(SHORTEST_MSG, shortest_chain);
 	printf(EMPTY_MSG, empty_buckets);
 
-
-
 }
