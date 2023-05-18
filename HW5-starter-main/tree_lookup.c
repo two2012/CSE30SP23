@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 	
 	// TODO: get filename and call load_table;
 	
-	char *filename = argv[1];
+	char *filename = argv[optind];
 
 	if (load_table(htable, tabsz, filename) != 0) {
 		fprintf(stderr, "error in load_table\n");

@@ -33,7 +33,7 @@ int load_table(node **htable, unsigned long int tabsz, char *filename) {
 		double xcoord = atof(xstr);
 		double ycoord = atof(ystr);
 		// TODO: get the corresponding chain for this entry
-		unsigned long hashed_id = hash(id);
+		unsigned long hashed_id = hash(id) % tabsz;
 		node *chain = htable[hashed_id];
 		
 		// TODO: check that the node doesn't already exist in table
@@ -47,6 +47,8 @@ int load_table(node **htable, unsigned long int tabsz, char *filename) {
 			fprintf(stderr, INSERTION_ERROR_MSG, id);
 			fclose(fp);
 			return -1;
+		}else {
+			htable[hashed_id] = insert_node(chain, id, xcoord, ycoord);
 		}
 	}
 
