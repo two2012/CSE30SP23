@@ -11,6 +11,7 @@ node *insert_node(node *front, char* id, double x, double y) {
 	{
 		return NULL;
 	}
+
 	new_node->id = malloc(strlen(id) + 1);
 	if (new_node->id == NULL)
 	{
@@ -27,13 +28,13 @@ node *insert_node(node *front, char* id, double x, double y) {
 	if (front == NULL)
 	{
 		front = new_node;
-		
+	
 	}
 	else
 	{
 		new_node->next = front;
 	}
-	
+
 	// TODO: return the new head of the chain if the function succeeded
 	
 	return new_node; // TODO: replace this once you implement

@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	
 	// TODO: initialze htable
 	// using calloc so all buckets are initialized to NULL
-	node **htable = calloc(tabsz, sizeof(node*));
+	node **htable = calloc(tabsz, sizeof(node**));
 	if (htable == NULL) {
 		return EXIT_FAILURE;
 	}
