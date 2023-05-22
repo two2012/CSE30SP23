@@ -31,7 +31,7 @@ fpconvert:
     and r4, r0, 0x000007c0      //extract exponent and store in r4
     lsr r4, r4, #6              //shift exponent to the least significant bit
     and r5, r0, 0x0000003f      //extract mantissa and store in r5
-    bit r0, r0, 0xfffff7ff      //clear out all bits but sign bit
+    bic r0, r0, 0xfffff7ff      //clear out all bits but sign bit
     lsl r0, r0, #20             //shift sign bit to the most significant bit
 
 //check if exponent is infinity
@@ -44,7 +44,7 @@ fpconvert:
     //check if exponent is zero
     cmp r4, #0              // if (exponent == 0)
     beq .Ldenormal          // it a denormalized number
-    sub r4, r4 #15          // else it is a normal number so subtract 15 from exponent
+    sub r4, r4, #15         // else it is a normal number so subtract 15 from exponent
     add r4, r4, #127        // add 127 to exponent
     lsl r4, r4, #23         // shift exponent to the position next to sign bit
     lsl r5, r5, #17         // shift mantissa to the position next to exponent
