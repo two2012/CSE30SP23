@@ -27,8 +27,54 @@ fpconvert:
 // ==========================================================================
 // YOUR CODE GOES IN THE SECTION BELOW
 // ==========================================================================
+//seperate sign bit, exponent and mantissa
+    and r4, r0, 0x000007c0      //extract exponent and store in r4
+    lsr r4, r4, #6              //shift exponent to the least significant bit
+    and r5, r0, 0x0000003f      //extract mantissa and store in r5
+    bit r0, r0, 0xfffff7ff      //clear out all bits but sign bit
+    lsl r0, r0, #20             //shift sign bit to the most significant bit
+
+//check if exponent is infinity
+    cmp r4, 0x000007c0      // if (exponent == "11111")
+    bne  .Lnot_infinity     // .
+    bl convert_infinity     // call convert_infinity
+    b .Lend                 // end if statement for infinity branch
+
+.Lnot_infinity:             // else
+    //check if exponent is zero
+    cmp r4, #0              // if (exponent == 0)
+    beq .Ldenormal          // it a denormalized number
+    sub r4, r4 #15          // else it is a normal number so subtract 15 from exponent
+    add r4, r4, #127        // add 127 to exponent
+    lsl r4, r4, #23         // shift exponent to the position next to sign bit
+    lsl r5, r5, #17         // shift mantissa to the position next to exponent
+    b .Lend                 // end if statement for normal number branch
+
+.Ldenormal:                 //else    
+
+    mov r8, #0              // i = 0
+    mov r7, 0x00000020      //      y = 0x00100000 (store 00100000 in r7)
+.Lloop:                     // while (first bit of mantissa != 1 && i < 5)
+    cmp r8, #5              //  if (i > 5)
+    bgt .Lend               //      end of loop
+                            //  else
+    mov r6, r5              //      x = mantissa (copy mantissa to r6)
+    and r6, r6, r7          //      x = x & y (and x with y)
+    cmp r6, #0              //  if (x == 0)
+    beq .Lnext              //      jump to lable .Lnext
+                            //  else
+    b .Lend                 //      end if statement for found leading 1 for mantissa
+
+.Lnext:                     // else
+    lsl r5, r5, #1          //      mantissa = mantissa >> 1 (shift x right by 1)
+    add r8, r8, #1          //      i = i + 1 (increment i)
+    sub r4, r4, #1          //      exponent = exponent - 1 (decrement exponent)
+    b .Lloop                //      jump to lable .Lloop
 
 
+.Lend:
+    orr r0, r0, r4          // combine sign bit, exponent and store in r0
+    orr r0, r0, r5          // combine sign bit, exponent and mantissa and store in r0
 
 // ==========================================================================
 // function epilogue - do not edit
@@ -61,6 +107,9 @@ convert_infinity:
 // YOUR CODE GOES IN THE SECTION BELOW
 // ==========================================================================
 
+    mov r4, 0x000000ff      // exponent = 11111111
+    lsl r4, r4, #23         // exponent = exponent << 23 (shift exponent to the position next to sign bit)
+    orr r5, r5, #0          // mantissa = 0
 
 
 // ==========================================================================
