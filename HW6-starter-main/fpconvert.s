@@ -54,6 +54,7 @@ fpconvert:
 
     mov r8, #0              // i = 0
     mov r7, 0x00000020      //      y = 0x00100000 (store 00100000 in r7)
+    mov r4, #113            //      exponent = 113 (-14+127=113)
 .Lloop:                     // while (first bit of mantissa != 1 && i < 5)
     cmp r8, #5              //  if (i > 5)
     bgt .Lend               //      end of loop
