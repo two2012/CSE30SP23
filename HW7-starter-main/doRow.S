@@ -30,40 +30,40 @@
 
 asm_doRow:	
 	push {r4-r10, fp, lr} 			//Push any preserved registers
-	add fp, sp, FP_OFFSET
-	sub sp, sp, FRMADD
+	add fp,sp,#FP_OFFSET
+	sub sp,sp,#FRMADD
 	
 	
 	// Write body of asm_doRow here
 	// store parameters to stack
-	str r0, [fp, -PARAM1]			// store dest to stack
-	str r1, [fp, -PARAM2] 			// store src to stack
-	str r2, [fp, -PARAM3]			// store curRow to stack
-	str r3, [fp, -PARAM4]			// store nRows to stack
+	str r0, [fp,#-PARAM1]			// store dest to stack
+	str r1, [fp,#-PARAM2] 			// store src to stack
+	str r2, [fp,#-PARAM3]			// store curRow to stack
+	str r3, [fp,#-PARAM4]			// store nRows to stack
 
 	// loop through each cell in the row
-	mov r4, 0						// i = 0
+	mov r4, #0						// i = 0
 .Louter_i_Loop:
-	ldr r5, [fp, IARG5]			// r5 = nCols
+	ldr r5, [fp, #IARG5]			// r5 = nCols
 	cmp r4, r5						// i < nCols
 
 	bge .Lend_outer_i_loop  		// if i >= nCols, end loop
-	mov r6, 0						// alive_neighbors = 0
+	mov r6, #0						// alive_neighbors = 0
 
 	// loop through each neighbor of a cell
-	mov r7, -1						// j = -1
+	mov r7, #-1						// j = -1
 .Linner_j_Loop:
-	cmp r7, 2						// j < 2
+	cmp r7, #2						// j < 2
 	bge .LendInner_j_Loop			// if j >= 2, end loop
 
-	mov r8, -1						// k = -1
+	mov r8, #-1						// k = -1
 .Linner_k_loop:
-	cmp r8, 2						// k < 2
+	cmp r8, #2						// k < 2
 	bge .LendInner_k_Loop			// if k >= 2, end loop
 
-	cmp r7, 0						// if j == 0
+	cmp r7, #0						// if j == 0
 	bne .Linner_k_loop_continue 	// if j != 0, continue
-	cmp r8, 0						// if k == 0
+	cmp r8, #0						// if k == 0
 	beq .Linner_k_loop_skip 		// if k == 0, skip
 
 .Linner_k_loop_continue:
@@ -71,63 +71,63 @@ asm_doRow:
 	// calculate the index of the neighbor
 	add r2, r2, r7					// r2 = curRow + j	
 	add r3, r4, r8					// r3 = i + k
-	ldr r0, [fp, -PARAM4]			// r0 = nRows
-	ldr r1, [fp, -PARAM5]			// r1 = nCols
+	ldr r0, [fp,#-PARAM4]			// r0 = nRows
+	ldr r1, [fp,#IARG5]			    // r1 = nCols
 	bl nGetIndex					// r0 = get_index(curRow + j, i + k, nRows, nCols)					
 
 	// load the neighbor from src
-	ldr r1, [fp, -PARAM2]			// r1 = src
-	mul r0, r0, 4					// r0 = r0 * 4
+	ldr r1, [fp,#-PARAM2]			// r1 = src
+	lsl r0, r0, #2 					// r0 = r0 * 4
 	ldr r2, [r1, r0]				// r2 = src[r0]
 
 	// check if the neighbor is alive
-	cmp r2, 0						// if neighbor == 0
+	cmp r2, #0						// if neighbor == 0
 	beq .Linner_k_loop_skip			// if neighbor == 0, skip
-	add r6, r6, 1					// alive_neighbors++
+	add r6,r6,#1					// alive_neighbors++
 
 .Linner_k_loop_skip:
-	add r8, r8, 1					// k++
+	add r8,r8,#1					// k++
 	b .Linner_k_loop				// continue loop
 	
 .LendInner_k_Loop:
-	add r7, r7, 1					// j++
+	add r7,r7,#1					// j++
 	b .Linner_j_Loop				// continue loop
 
 .LendInner_j_Loop:
-	add r4, r4, 1					// i++
+	add r4,r4,#1					// i++
 	b .Louter_i_Loop				// continue loop
 	
 	//update the cell state in the destination buffer
-	ldr r0, [fp, -PARAM2] 			// r0 = src
-	ldr r1, [fp, -PARAM3]		    // r1 = curRow
+	ldr r0, [fp,#-PARAM2] 			// r0 = src
+	ldr r1, [fp,#-PARAM3]		    // r1 = curRow
 	mul r1, r1, r5					// r1 = curRow * nCols
 	add r1, r1, r4					// r1 = curRow * nCols + i
 	ldr r3, [r0, r1] 				// r3 = src[curRow * nCols + i]
-	cmp r3, 1						// if src[curRow * nCols + i] == 1 
+	cmp r3,#1						// if src[curRow * nCols + i] == 1 
 	beq .Lcell_alive				// if src[curRow * nCols + i] == 1, go to Lcell_alive
 	b .Lcell_dead					// else the cell is dead
 	
 .Lcell_alive:
-	cmp r6, 2						// if alive_neighbors == 2
+	cmp r6,#2						// if alive_neighbors == 2
 	blt .Lcell_turn_dead			// if alive_neighbors < 2, go to Lcell_dead
-	cmp r6, 3						// if alive_neighbors == 3
+	cmp r6,#3						// if alive_neighbors == 3
 	bgt .Lcell_turn_dead			// if alive_neighbors > 3, go to Lcell_dead
 	b .Louter_i_Loop				// else the cell is alive, continue loop
 
 .Lcell_dead:
-	cmp r6, 3						// if alive_neighbors == 3
+	cmp r6,#3						// if alive_neighbors == 3
 	bne .Louter_i_Loop				// if alive_neighbors != 3, continue loop
-	ldr r0, [fp, -PARAM1]			// r0 = dest
-	mov r2, 1						// r2 = 1
+	ldr r0, [fp,#-PARAM1]			// r0 = dest
+	mov r2,#1						// r2 = 1
 	str r2, [r0, r1]				// dest[curRow * nCols + i] = 1
-	ldr r1, [fp, IARG6]				// r1 = *newLife
-	add r1, r1, 1					// *newLife++
-	str r1, [fp, IARG6]			    // store *newLife back to stack
+	ldr r1, [fp, #IARG6]				// r1 = *newLife
+	add r1,r1,#1					// *newLife++
+	str r1, [fp, #IARG6]			    // store *newLife back to stack
 	b .Louter_i_Loop				// continue loop
 
 .Lcell_turn_dead:
-	ldr r0, [fp, -PARAM1]			// r0 = dest
-	mov r2, 0						// r2 = 0
+	ldr r0, [fp,#-PARAM1]			// r0 = dest
+	mov r2, #0						// r2 = 0
 	str r2, [r0, r1]				// dest[curRow * nCols + i] = 0
 	b .Louter_i_Loop				// continue loop
 
@@ -135,7 +135,7 @@ asm_doRow:
 
 .Lend_outer_i_loop:
 
-	sub sp, fp, FP_OFFSET
+	sub sp, fp, #FP_OFFSET
 	pop {r4-r10, fp, lr} 			//Pop preserved registers
 	bx lr
 	
