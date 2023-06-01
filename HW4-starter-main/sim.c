@@ -67,6 +67,7 @@ static void doRow(belem *dest, belem *src, size_t row, size_t rows, size_t cols)
       if (alive_neighbors == 3)
       {
         dest[row * cols + i] = 1; // The cell becomes alive
+        //newlife++;
       }
       else
       {
